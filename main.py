@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return {"message": "Ezan İl/İlçe API Aktif"}
+    return jsonify({"message": "API çalışıyor."})
 
 @app.route("/update")
 def update():
