@@ -1,6 +1,7 @@
 # main.py
 from flask import Flask, jsonify
 from il_ilce_updater import fetch_and_save_iller_ilceler
+from flask import Flask
 
 app = Flask(__name__)
 
