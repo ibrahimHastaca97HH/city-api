@@ -2,31 +2,30 @@
 import requests
 import json
 
-
 def fetch_and_save_iller_ilceler():
-    il_url = "https://ezanvakti.herokuapp.com/sehirler"
-    iller = requests.get(il_url).json()
+    try:
+        iller_url = "https://namazvakti.diyanet.gov.tr/tr-TR/namazvakti/il"
+        iller_response = requests.get(iller_url)
+        iller = iller_response.json()
 
-    data = []
+        full_data = []
 
-    for il in iller:
-        il_adi = il['sehirAdi']
-        il_kodu = il['sehirID']
-
-        ilce_url = f"https://ezanvakti.herokuapp.com/ilceler/{il_kodu}"
-        try:
-            ilceler = requests.get(ilce_url).json()
-            ilce_listesi = [{'ilceAdi': ilce['ilceAdi'], 'ilceID': ilce['ilceID']} for ilce in ilceler]
-
-            data.append({
-                'ilAdi': il_adi,
-                'ilID': il_kodu,
-                'ilceler': ilce_listesi
+        for il in iller:
+            il_id = il["IlID"]
+            il_ad = il["IlAd"]
+            ilceler_url = f"https://namazvakti.diyanet.gov.tr/tr-TR/namazvakti/il/{il_id}"
+            ilceler_response = requests.get(ilceler_url)
+            ilceler = ilceler_response.json()
+            full_data.append({
+                "il": il_ad,
+                "il_id": il_id,
+                "ilceler": ilceler
             })
-        except:
-            continue
 
-    with open("iller_ilceler.json", "w", encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+        with open("iller_ilceler.json", "w", encoding="utf-8") as f:
+            json.dump(full_data, f, ensure_ascii=False, indent=2)
 
-    return {"status": "ok", "message": "Veri başarıyla güncellendi"}
+        return {"status": "ok", "message": "İl ve ilçeler başarıyla güncellendi."}
+
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
